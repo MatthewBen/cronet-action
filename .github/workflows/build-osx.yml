@@ -11,24 +11,21 @@ jobs:
           echo "$GITHUB_WORKSPACE/depot_tools" >> $GITHUB_PATH
           
       - name: Fetch Chromium Source Code
-        working-directory: ${{ GITHUB_WORKSPACE }}
         run: |
-          mkdir chromium
-          cd chromium
           cp gclient_config .gclient
           gclient sync --no-history
           
       - name: Build Chromium Cronet
-        working-directory: ${{ GITHUB_WORKSPACE }}/chromium/src
+        working-directory: ./src
         run: |
           gn gen out/Cronet
           ninja -C out/Cronet cronet_package
           
       - name: remove obj files
-        run: rm -rf $GITHUB_WORKSPACE/chromium/src/out/Cronet/obj
+        run: rm -rf ./src/out/Cronet/obj
         
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
           # A file, directory or wildcard pattern that describes what to upload
-          path: $GITHUB_WORKSPACE/chromium/src/out/Cronet/
+          path: ./src/out/Cronet/

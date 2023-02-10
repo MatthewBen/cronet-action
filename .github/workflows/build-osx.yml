@@ -9,4 +9,13 @@ jobs:
       - run: |
           git clone "https://chromium.googlesource.com/chromium/tools/depot_tools.git"
           echo "$GITHUB_WORKSPACE/depot_tools" >> $GITHUB_PATH
-      - run: fetch --help
+      - name: Fetch Chromium Source Code
+        run: |
+          mkdir chromium
+          cd chromium
+          fetch --no-history chromium
+      - name: Build Chromium Cronet
+        working-directory: ./chromium
+        run: |
+          gn gen out/Cronet
+          ninja -C out/Cronet cronet_package
